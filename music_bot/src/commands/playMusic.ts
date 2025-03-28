@@ -13,7 +13,7 @@ const downloadFolder = () => {
   }
   return folder;
 };
-const PlayMusic = (bot: Bot) => {
+export const PlayMusic = (bot: Bot) => {
   bot.command("play", async (ctx) => {
     const song = ctx.message.text.split(" ")[1];
     const validUri = ytdl.validateURL(song);
@@ -65,6 +65,18 @@ const PlayMusic = (bot: Bot) => {
           }
         }
       });
+      audio.on("error", (error) => {
+        ctx.reply("Something went wrong while downloading the audio.");
+        reject(error);
+      });
     });
+
+    gettingAudio.then(() => {
+      console.log("Audio downloaded successfully.");
+    });
+    gettingAudio.catch((error) => {
+      console.error("Error downloading audio:", error);
+    });
+    return gettingAudio;
   });
 };
